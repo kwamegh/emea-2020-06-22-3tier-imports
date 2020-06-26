@@ -1,5 +1,4 @@
 ---
----
 #- name: Run common setup
 #  import_playbook: playbooks/common.yml
 
@@ -44,4 +43,4 @@
   roles:
     - appdb
 ...
-...
+
