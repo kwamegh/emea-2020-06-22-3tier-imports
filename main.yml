@@ -1,19 +1,47 @@
 ---
-- name: Run common setup
-  import_playbook: playbooks/common.yml
+---
+#- name: Run common setup
+#  import_playbook: playbooks/common.yml
 
-- name: Install and configure frontend
-  import_playbook: playbooks/front_end.yml
+#- name: Install and configure frontend
+#  import_playbook: playbooks/front_end.yml
  
-- name: Install and configure app_tier
-  import_playbook: playbooks/app_tier.yml
+#- name: Install and configure app_tier
+#  import_playbook: playbooks/app_tier.yml
 
-- name: Install database tier
-  hosts: appdbs
-  tags:
-    - dbs
-    - postgres
+#- name: Install database tier
+#  hosts: appdbs
+#  tags:
+#    - dbs
+#    - postgres
 
+#  roles:
+#    - geerlingguy.postgresql
+
+- name: Import In-memory inventory play
+  import_playbook: in-memory-inventory.yml
+
+# Setup front-end load balancer tier
+- name: setup load-balancer tier
+  hosts: frontends
+  become: yes
   roles:
-    - geerlingguy.postgresql
+    - haproxy
+
+# Setup application servers tier
+- name: setup app tier
+  hosts: apps
+  become: yes
+  gather_facts: false
+  roles:
+    - httpd
+    - tomcat
+
+# Setup database tier
+- name: setup database tier
+  become: yes
+  hosts: appdbs
+  roles:
+    - appdb
+...
 ...
